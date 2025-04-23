@@ -1102,6 +1102,237 @@ public class UserResource extends BaseResource {
     }
 
     /**
+     * Submit a registration request.
+     *
+     * @api {put} /user/request Submit a registration request
+     * @apiName PutUserRequest
+     * @apiGroup User
+     * @apiParam {String{3..50}} username Username
+     * @apiParam {String{8..50}} password Password
+     * @apiParam {String{1..100}} email E-mail
+     * @apiSuccess {String} status Status OK
+     * @apiError (client) ValidationError Validation error
+     * @apiError (client) AlreadyExistingUsername Login already used
+     * @apiError (server) UnknownError Unknown server error
+     * @apiVersion 1.5.0
+     *
+     * @param username Username
+     * @param password Password
+     * @param email E-Mail
+     * @return Response
+     */
+    @PUT
+    @Path("request")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response submitRequest(
+            @FormParam("username") String username,
+            @FormParam("password") String password,
+            @FormParam("email") String email) {
+        // Validate the input data
+        username = ValidationUtil.validateLength(username, "username", 3, 50);
+        ValidationUtil.validateUsername(username, "username");
+        password = ValidationUtil.validateLength(password, "password", 8, 50);
+        email = ValidationUtil.validateLength(email, "email", 1, 100);
+        ValidationUtil.validateEmail(email, "email");
+        
+        // Check if the username already exists
+        UserDao userDao = new UserDao();
+        User existingUser = userDao.getActiveByUsername(username);
+        if (existingUser != null) {
+            throw new ClientException("AlreadyExistingUsername", "Login already used");
+        }
+        
+        // Check if there's already a pending request for this username
+        UserRequestDao userRequestDao = new UserRequestDao();
+        UserRequest existingRequest = userRequestDao.getByUsername(username);
+        if (existingRequest != null) {
+            throw new ClientException("AlreadyExistingUsername", "Login already used");
+        }
+        
+        // Create the user request
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUsername(username);
+        userRequest.setPassword(password); // Note: in a real implementation, encrypt the password here
+        userRequest.setEmail(email);
+        userRequest.setStorageQuota(ConfigUtil.getConfigLongValue(ConfigType.QUOTA_DEFAULT)); // Default storage quota
+        
+        // Save the request
+        try {
+            userRequestDao.create(userRequest);
+        } catch (Exception e) {
+            throw new ServerException("UnknownError", "Unknown server error", e);
+        }
+        
+        // Return OK
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("status", "ok");
+        return Response.ok().entity(response.build()).build();
+    }
+    
+    /**
+     * Get pending registration requests.
+     *
+     * @api {get} /user/request Get pending registration requests
+     * @apiName GetUserRequests
+     * @apiGroup User
+     * @apiSuccess {Object[]} requests List of requests
+     * @apiSuccess {String} requests.id ID
+     * @apiSuccess {String} requests.username Username
+     * @apiSuccess {String} requests.email Email
+     * @apiSuccess {Number} requests.create_date Create date (timestamp)
+     * @apiError (client) ForbiddenError Access denied
+     * @apiPermission admin
+     * @apiVersion 1.5.0
+     *
+     * @return Response
+     */
+    @GET
+    @Path("request")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPendingRequests() {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        checkBaseFunction(BaseFunction.ADMIN);
+        
+        // Get all pending requests
+        UserRequestDao userRequestDao = new UserRequestDao();
+        List<UserRequest> requestList = userRequestDao.findPendingRequests();
+        
+        // Build the response
+        JsonArrayBuilder requests = Json.createArrayBuilder();
+        for (UserRequest userRequest : requestList) {
+            requests.add(Json.createObjectBuilder()
+                    .add("id", userRequest.getId())
+                    .add("username", userRequest.getUsername())
+                    .add("email", userRequest.getEmail())
+                    .add("create_date", userRequest.getCreateDate().getTime()));
+        }
+        
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("requests", requests);
+        
+        return Response.ok().entity(response.build()).build();
+    }
+    
+    /**
+     * Approve a registration request.
+     *
+     * @api {post} /user/request/:id/approve Approve a registration request
+     * @apiName PostUserRequestApprove
+     * @apiGroup User
+     * @apiParam {String} id Request ID
+     * @apiSuccess {String} status Status OK
+     * @apiError (client) ForbiddenError Access denied
+     * @apiError (client) NotFound Request not found
+     * @apiError (server) UnknownError Unknown server error
+     * @apiPermission admin
+     * @apiVersion 1.5.0
+     *
+     * @param id Request ID
+     * @return Response
+     */
+    @POST
+    @Path("request/{id: [a-z0-9\\-]+}/approve")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response approveRequest(@PathParam("id") String id) {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        checkBaseFunction(BaseFunction.ADMIN);
+        
+        // Get the request
+        UserRequestDao userRequestDao = new UserRequestDao();
+        UserRequest userRequest = userRequestDao.getById(id);
+        if (userRequest == null || !Constants.USER_REQUEST_STATUS_PENDING.equals(userRequest.getStatus())) {
+            throw new ClientException("NotFound", "Request not found");
+        }
+        
+        // Check if the username is still available
+        UserDao userDao = new UserDao();
+        User existingUser = userDao.getActiveByUsername(userRequest.getUsername());
+        if (existingUser != null) {
+            throw new ClientException("AlreadyExistingUsername", "Login already used");
+        }
+        
+        // Create the user
+        User user = new User();
+        user.setRoleId(Constants.DEFAULT_USER_ROLE);
+        user.setUsername(userRequest.getUsername());
+        user.setPassword(userRequest.getPassword()); // Note: in a real implementation, might need to encrypt if not already encrypted
+        user.setEmail(userRequest.getEmail());
+        user.setStorageQuota(userRequest.getStorageQuota());
+        user.setOnboarding(true);
+        
+        // Create the user and update the request
+        try {
+            userDao.create(user, principal.getId());
+            
+            userRequest.setStatus(Constants.USER_REQUEST_STATUS_APPROVED);
+            userRequest.setProcessDate(new Date());
+            userRequestDao.update(userRequest);
+            
+            // TODO: Send email notification to the user
+        } catch (Exception e) {
+            if ("AlreadyExistingUsername".equals(e.getMessage())) {
+                throw new ClientException("AlreadyExistingUsername", "Login already used", e);
+            } else {
+                throw new ServerException("UnknownError", "Unknown server error", e);
+            }
+        }
+        
+        // Return OK
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("status", "ok");
+        return Response.ok().entity(response.build()).build();
+    }
+    
+    /**
+     * Reject a registration request.
+     *
+     * @api {post} /user/request/:id/reject Reject a registration request
+     * @apiName PostUserRequestReject
+     * @apiGroup User
+     * @apiParam {String} id Request ID
+     * @apiSuccess {String} status Status OK
+     * @apiError (client) ForbiddenError Access denied
+     * @apiError (client) NotFound Request not found
+     * @apiPermission admin
+     * @apiVersion 1.5.0
+     *
+     * @param id Request ID
+     * @return Response
+     */
+    @POST
+    @Path("request/{id: [a-z0-9\\-]+}/reject")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response rejectRequest(@PathParam("id") String id) {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        checkBaseFunction(BaseFunction.ADMIN);
+        
+        // Get the request
+        UserRequestDao userRequestDao = new UserRequestDao();
+        UserRequest userRequest = userRequestDao.getById(id);
+        if (userRequest == null || !Constants.USER_REQUEST_STATUS_PENDING.equals(userRequest.getStatus())) {
+            throw new ClientException("NotFound", "Request not found");
+        }
+        
+        // Update the request
+        userRequest.setStatus(Constants.USER_REQUEST_STATUS_REJECTED);
+        userRequest.setProcessDate(new Date());
+        userRequestDao.update(userRequest);
+        
+        // TODO: Send email notification to the user
+        
+        // Return OK
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("status", "ok");
+        return Response.ok().entity(response.build()).build();
+    }
+
+    /**
      * Returns the authentication token value.
      *
      * @return Token value

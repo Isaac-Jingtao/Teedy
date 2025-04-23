@@ -6,11 +6,20 @@
 angular.module('docs').controller('Login', function (Restangular, $scope, $rootScope, $state, $stateParams, $dialog, User, $translate, $uibModal) {
   $scope.codeRequired = false;
   $scope.guest_login = true;
+  $scope.user = {};
 
   // Get the app configuration
   Restangular.one('app').get().then(function (data) {
     $rootScope.app = data;
   });
+
+  // Register request
+  $scope.openRegisterRequest = function() {
+    $uibModal.open({
+      templateUrl: 'partial/docs/registerrequest.html',
+      controller: 'RegisterRequest'
+    });
+  };
 
   // Login as guest
   $scope.loginAsGuest = function () {

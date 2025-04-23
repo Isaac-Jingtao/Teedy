@@ -163,6 +163,15 @@ angular.module('docs',
         }
       }
     })
+    .state('settings.user.request', {
+      url: '/request',
+      views: {
+        'user': {
+          templateUrl: 'partial/docs/settings.user.request.html',
+          controller: 'SettingsUserRequest'
+        }
+      }
+    })
     .state('settings.user.edit', {
       url: '/edit/:username',
       views: {
@@ -192,15 +201,6 @@ angular.module('docs',
     })
     .state('settings.workflow.edit', {
       url: '/edit/:id',
-      views: {
-        'workflow': {
-          templateUrl: 'partial/docs/settings.workflow.edit.html',
-          controller: 'SettingsWorkflowEdit'
-        }
-      }
-    })
-    .state('settings.workflow.add', {
-      url: '/add',
       views: {
         'workflow': {
           templateUrl: 'partial/docs/settings.workflow.edit.html',

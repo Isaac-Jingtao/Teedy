@@ -14,7 +14,8 @@
     "password_lost_sent_title": "Password reset email sent",
     "password_lost_sent_message": "An email has been sent to <strong>{{ username }}</strong> to reset your password",
     "password_lost_error_title": "Password reset error",
-    "password_lost_error_message": "Unable to send a password reset email, please contact your administrator for a manual reset"
+    "password_lost_error_message": "Unable to send a password reset email, please contact your administrator for a manual reset",
+    "register_request_btn": "Request registration"
   },
   "passwordlost": {
     "title": "Password lost",
@@ -253,7 +254,23 @@
       "percent_used": "{{ percent | number: 0 }}% Used",
       "related_links": "Related links",
       "document_created": "Documents created by {{ username }}",
-      "edit_user": "Edit {{ username }} user"
+      "edit_user": "Edit {{ username }} user",
+      "users": "Users",
+      "requests": "Registration requests",
+      "request": {
+        "title": "User registration requests",
+        "username": "Username",
+        "email": "Email",
+        "date": "Request date",
+        "actions": "Actions",
+        "approve": "Approve",
+        "reject": "Reject",
+        "none": "No pending registration requests",
+        "approve_title": "Approve user registration",
+        "approve_message": "Are you sure you want to approve the registration request for {{username}}?",
+        "reject_title": "Reject user registration",
+        "reject_message": "Are you sure you want to reject the registration request for {{username}}?"
+      }
     }
   },
   "usergroup": {

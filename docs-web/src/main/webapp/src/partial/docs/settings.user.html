@@ -3,6 +3,17 @@
   <a class="btn btn-primary" href="#/settings/user/add">{{ 'settings.user.add_user' | translate }}</a>
 </h1>
 
+<ul class="nav nav-tabs">
+  <li ui-sref-active="active">
+    <a href="#/settings/user">{{ 'settings.user.users' | translate }}</a>
+  </li>
+  <li ui-sref-active="active">
+    <a href="#/settings/user/request">{{ 'settings.user.requests' | translate }} 
+      <span class="badge" ng-show="userRequestCount > 0">{{ userRequestCount }}</span>
+    </a>
+  </li>
+</ul>
+
 <div class="row">
   <div class="col-md-4 well">
     <table class="table table-hover table-users">

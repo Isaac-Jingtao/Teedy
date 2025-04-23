@@ -65,5 +65,10 @@ public enum ConfigType {
     LDAP_BASE_DN,
     LDAP_FILTER,
     LDAP_DEFAULT_EMAIL,
-    LDAP_DEFAULT_STORAGE
+    LDAP_DEFAULT_STORAGE,
+    
+    /**
+     * Default storage quota for new users (in bytes).
+     */
+    QUOTA_DEFAULT
 }

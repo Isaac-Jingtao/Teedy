@@ -1,0 +1,38 @@
+<h2>
+  <span translate="settings.user.request.title"></span>
+</h2>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>{{ 'settings.user.request.username' | translate }}</th>
+        <th>{{ 'settings.user.request.email' | translate }}</th>
+        <th>{{ 'settings.user.request.date' | translate }}</th>
+        <th>{{ 'settings.user.request.actions' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="request in requests">
+        <td>{{ request.username }}</td>
+        <td>{{ request.email }}</td>
+        <td>{{ request.create_date | date: dateFormat }}</td>
+        <td>
+          <div class="btn-group">
+            <button type="button" class="btn btn-success btn-xs" ng-click="approve(request)">
+              <span class="fas fa-check"></span> {{ 'settings.user.request.approve' | translate }}
+            </button>
+            <button type="button" class="btn btn-danger btn-xs" ng-click="reject(request)">
+              <span class="fas fa-times"></span> {{ 'settings.user.request.reject' | translate }}
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr ng-show="requests.length === 0">
+        <td colspan="4" class="text-center">
+          {{ 'settings.user.request.none' | translate }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div> 

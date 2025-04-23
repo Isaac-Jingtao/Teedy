@@ -1,0 +1,42 @@
+<div class="modal-header">
+  <h3>{{ 'register.request.title' | translate }}</h3>
+</div>
+<div class="modal-body">
+  <form role="form" name="registerRequestForm" novalidate>
+    <div class="form-group" ng-class="{ 'has-error': !registerRequestForm.username.$valid && registerRequestForm.$dirty, 'has-success': registerRequestForm.username.$valid }">
+      <label for="inputUsername">{{ 'register.request.username' | translate }}</label>
+      <input name="username" type="text" id="inputUsername" required ng-pattern="/^[a-zA-Z0-9_@.-]*$/" ng-minlength="3" ng-maxlength="50" class="form-control" ng-model="user.username" />
+      <span class="help-block" ng-show="registerRequestForm.username.$error.required && registerRequestForm.$dirty">{{ 'validation.required' | translate }}</span>
+      <span class="help-block" ng-show="registerRequestForm.username.$error.minlength && registerRequestForm.$dirty">{{ 'validation.too_short' | translate }}</span>
+      <span class="help-block" ng-show="registerRequestForm.username.$error.maxlength && registerRequestForm.$dirty">{{ 'validation.too_long' | translate }}</span>
+      <span class="help-block" ng-show="registerRequestForm.username.$error.pattern && registerRequestForm.$dirty">{{ 'validation.alphanumeric' | translate }}</span>
+    </div>
+    
+    <div class="form-group" ng-class="{ 'has-error': !registerRequestForm.email.$valid && registerRequestForm.$dirty, 'has-success': registerRequestForm.email.$valid }">
+      <label for="inputEmail">{{ 'register.request.email' | translate }}</label>
+      <input name="email" type="email" id="inputEmail" required class="form-control" ng-model="user.email" />
+      <span class="help-block" ng-show="registerRequestForm.email.$error.required && registerRequestForm.$dirty">{{ 'validation.required' | translate }}</span>
+      <span class="help-block" ng-show="registerRequestForm.email.$error.email && registerRequestForm.$dirty">{{ 'validation.email' | translate }}</span>
+    </div>
+    
+    <div class="form-group" ng-class="{ 'has-error': !registerRequestForm.password.$valid && registerRequestForm.$dirty, 'has-success': registerRequestForm.password.$valid }">
+      <label for="inputPassword">{{ 'register.request.password' | translate }}</label>
+      <input name="password" type="password" id="inputPassword" required ng-minlength="8" ng-maxlength="50" class="form-control" ng-model="user.password" />
+      <span class="help-block" ng-show="registerRequestForm.password.$error.required && registerRequestForm.$dirty">{{ 'validation.required' | translate }}</span>
+      <span class="help-block" ng-show="registerRequestForm.password.$error.minlength && registerRequestForm.$dirty">{{ 'validation.too_short' | translate }}</span>
+      <span class="help-block" ng-show="registerRequestForm.password.$error.maxlength && registerRequestForm.$dirty">{{ 'validation.too_long' | translate }}</span>
+    </div>
+    
+    <div class="form-group" ng-class="{ 'has-error': !registerRequestForm.passwordConfirm.$valid && registerRequestForm.$dirty, 'has-success': registerRequestForm.passwordConfirm.$valid }">
+      <label for="inputPasswordConfirm">{{ 'register.request.password_confirm' | translate }}</label>
+      <input name="passwordConfirm" type="password" id="inputPasswordConfirm" required class="form-control" 
+             ui-validate="'$value === user.password'" ui-validate-watch="'user.password'" 
+             ng-model="user.passwordConfirm" />
+      <span class="help-block" ng-show="registerRequestForm.passwordConfirm.$error.validator && registerRequestForm.$dirty">{{ 'validation.password_confirm' | translate }}</span>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" ng-click="cancel()">{{ 'cancel' | translate }}</button>
+  <button type="button" class="btn btn-primary" ng-click="submitRequest()" ng-disabled="!registerRequestForm.$valid">{{ 'register.request.submit' | translate }}</button>
+</div> 

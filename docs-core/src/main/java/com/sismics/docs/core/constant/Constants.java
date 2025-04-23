@@ -102,4 +102,19 @@ public class Constants {
      * mm per inch.
      */
     public static float MM_PER_INCH = 1 / (10 * 2.54f) * 72f;
+    
+    /**
+     * User request status: pending.
+     */
+    public static final String USER_REQUEST_STATUS_PENDING = "PENDING";
+
+    /**
+     * User request status: approved.
+     */
+    public static final String USER_REQUEST_STATUS_APPROVED = "APPROVED";
+
+    /**
+     * User request status: rejected.
+     */
+    public static final String USER_REQUEST_STATUS_REJECTED = "REJECTED";
 }
