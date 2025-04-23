@@ -249,11 +249,13 @@
     "menu_inbox": "收件箱扫描",
     "menu_server_logs": "服务器日志",
     "user": {
-      "title": "用户 <small>管理</small>",
+      "title": "用户管理",
+      "users": "用户列表",
       "add_user": "添加用户",
       "username": "用户名",
       "create_date": "创建日期",
       "totp_enabled": "为该帐号启用双身份认证",
+      "requests": "待审核申请",
       "request": {
         "title": "注册申请管理",
         "username": "申请用户名",

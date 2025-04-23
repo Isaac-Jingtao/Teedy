@@ -1,18 +1,11 @@
 <h1>
   <span translate="settings.user.title"></span>
   <a class="btn btn-primary" href="#/settings/user/add">{{ 'settings.user.add_user' | translate }}</a>
+  <a class="btn btn-info" href="#/settings/user/request">
+    {{ 'settings.user.requests' | translate }}
+    <span class="badge badge-light" ng-show="userRequestCount > 0">{{ userRequestCount }}</span>
+  </a>
 </h1>
-
-<ul class="nav nav-tabs">
-  <li ui-sref-active="active">
-    <a href="#/settings/user">{{ 'settings.user.users' | translate }}</a>
-  </li>
-  <li ui-sref-active="active">
-    <a href="#/settings/user/request">{{ 'settings.user.requests' | translate }} 
-      <span class="badge" ng-show="userRequestCount > 0">{{ userRequestCount }}</span>
-    </a>
-  </li>
-</ul>
 
 <div class="row">
   <div class="col-md-4 well">
