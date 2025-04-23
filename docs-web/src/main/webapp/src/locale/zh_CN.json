@@ -254,6 +254,22 @@
       "username": "用户名",
       "create_date": "创建日期",
       "totp_enabled": "为该帐号启用双身份认证",
+      "request": {
+        "title": "注册申请管理",
+        "username": "申请用户名",
+        "email": "申请邮箱",
+        "date": "申请日期",
+        "actions": "操作",
+        "approve": "同意",
+        "reject": "拒绝",
+        "approve_title": "同意注册申请",
+        "approve_message": "您确定要同意用户 {{ username }} 的注册申请吗？",
+        "reject_title": "拒绝注册申请",
+        "reject_message": "您确定要拒绝用户 {{ username }} 的注册申请吗？",
+        "empty": "暂无待处理的注册申请",
+        "success_approved": "已同意注册申请",
+        "success_rejected": "已拒绝注册申请"
+      },
       "edit": {
         "delete_user_title": "删除用户",
         "delete_user_message": "您是否确认删除该用户? 所有相关文档，文件和标签将被删除",
@@ -508,5 +524,23 @@
   "loading": "加载中...",
   "send": "发送",
   "enabled": "激活",
-  "disabled": "未激活"
+  "disabled": "未激活",
+  "register": {
+    "request": {
+      "title": "申请注册",
+      "submit": "提交申请",
+      "success_title": "申请已提交",
+      "success_message": "您的注册申请已成功提交。管理员审核后会通知您。",
+      "error_title": "申请失败",
+      "error": {
+        "default": "申请提交失败，请稍后重试",
+        "already_exists": "该用户名已被使用",
+        "validation": "请检查您输入的信息是否正确"
+      },
+      "username": "用户名",
+      "email": "电子邮箱",
+      "password": "密码",
+      "password_confirm": "确认密码"
+    }
+  }
 }
