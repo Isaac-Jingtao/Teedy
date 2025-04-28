@@ -32,6 +32,7 @@
     "toggle_navigation": "Toggle navigation",
     "nav_documents": "Documents",
     "nav_tags": "Tags",
+    "nav_chat": "Chat",
     "nav_users_groups": "Users & Groups",
     "error_info": "{{ count }} new error{{ count > 1 ? 's' : '' }}",
     "logged_as": "Logged in as {{ username }}",
@@ -657,5 +658,39 @@
   "loading": "Loading...",
   "send": "Send",
   "enabled": "Enabled",
-  "disabled": "Disabled"
+  "disabled": "Disabled",
+  "chat": {
+    "title": "Chat",
+    "send": "Send",
+    "type_message": "Type a message...",
+    "new_message": "New message",
+    "search_contacts": "Search contacts",
+    "search_groups": "Search groups",
+    "search_users": "Search users",
+    "contacts": "Contacts",
+    "groups": "Groups",
+    "members": "members",
+    "online": "Online",
+    "offline": "Offline",
+    "welcome": "Welcome to Chat",
+    "welcome_message": "Select a contact or group to start chatting",
+    "start_conversation": "Start a new conversation",
+    "start_random_chat": "Start random chat",
+    "no_contacts": "No contacts found",
+    "no_groups": "No groups found",
+    "no_users": "No users found",
+    "attachment_coming_soon": "Attachment feature coming soon",
+    "confirm_leave_group": "Are you sure you want to leave this group?",
+    "confirm_clear_history": "Are you sure you want to clear chat history?",
+    "clear_history": "Clear history",
+    "group": {
+      "create": "Create group",
+      "join": "Join group",
+      "leave": "Leave group",
+      "name": "Group name",
+      "name_placeholder": "Enter group name",
+      "name_required": "Group name is required",
+      "members": "Group members"
+    }
+  }
 }

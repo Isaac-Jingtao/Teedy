@@ -32,6 +32,7 @@
     "toggle_navigation": "切换导航",
     "nav_documents": "文档",
     "nav_tags": "标签",
+    "nav_chat": "聊天",
     "nav_users_groups": "用户 & 群组",
     "error_info": "{{ count }} 新错误",
     "logged_as": "以 {{ username }}登录",
@@ -543,6 +544,40 @@
       "email": "电子邮箱",
       "password": "密码",
       "password_confirm": "确认密码"
+    }
+  },
+  "chat": {
+    "title": "聊天",
+    "send": "发送",
+    "type_message": "输入消息...",
+    "new_message": "新消息",
+    "search_contacts": "搜索联系人",
+    "search_groups": "搜索群组",
+    "search_users": "搜索用户",
+    "contacts": "联系人",
+    "groups": "群组",
+    "members": "成员",
+    "online": "在线",
+    "offline": "离线",
+    "welcome": "欢迎使用聊天功能",
+    "welcome_message": "选择一个联系人或群组开始聊天",
+    "start_conversation": "开始新的对话吧",
+    "start_random_chat": "随机开始聊天",
+    "no_contacts": "没有联系人",
+    "no_groups": "没有群组",
+    "no_users": "没有用户",
+    "attachment_coming_soon": "附件功能即将推出",
+    "confirm_leave_group": "确定要退出这个群组吗？",
+    "confirm_clear_history": "确定要清除所有聊天记录吗？",
+    "clear_history": "清除历史记录",
+    "group": {
+      "create": "创建群组",
+      "join": "加入群组",
+      "leave": "退出群组",
+      "name": "群组名称",
+      "name_placeholder": "输入群组名称",
+      "name_required": "群组名称不能为空",
+      "members": "群组成员"
     }
   }
 }

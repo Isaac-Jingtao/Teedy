@@ -13,6 +13,12 @@
     <listener-class>com.sismics.util.listener.IIOProviderContextListener</listener-class>
   </listener>
 
+  <!-- WebSocket configuration -->
+  <listener>
+    <display-name>WebSocket configuration</display-name>
+    <listener-class>com.sismics.docs.rest.config.WebSocketConfig</listener-class>
+  </listener>
+
   <!-- This filter handles CORS -->
   <filter>
     <filter-name>corsFilter</filter-name>

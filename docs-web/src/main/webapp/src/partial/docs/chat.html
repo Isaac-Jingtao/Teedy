@@ -1,0 +1,206 @@
+<div class="chat-container">
+    <div class="chat-sidebar">
+        <div class="chat-sidebar-header">
+            <h3><span class="fas fa-comments"></span> {{ 'chat.title' | translate }}</h3>
+            <button class="btn btn-primary btn-sm" ng-click="createGroup()">
+                <span class="fas fa-plus"></span> {{ 'chat.group.create' | translate }}
+            </button>
+        </div>
+        
+        <div class="chat-sidebar-tabs">
+            <ul class="nav nav-tabs nav-justified">
+                <li ng-class="{'active': activeTab === 'contacts'}">
+                    <a href ng-click="setActiveTab('contacts')">
+                        <span class="fas fa-user"></span> {{ 'chat.contacts' | translate }}
+                    </a>
+                </li>
+                <li ng-class="{'active': activeTab === 'groups'}">
+                    <a href ng-click="setActiveTab('groups')">
+                        <span class="fas fa-users"></span> {{ 'chat.groups' | translate }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="chat-sidebar-content">
+            <div class="chat-contacts" ng-show="activeTab === 'contacts'">
+                <div class="chat-search">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="fas fa-search"></span></span>
+                        <input type="text" class="form-control input-sm" 
+                               ng-model="contactSearch" 
+                               placeholder="{{ 'chat.search_contacts' | translate }}">
+                    </div>
+                </div>
+                
+                <div class="chat-contact-list">
+                    <div class="chat-contact" 
+                         ng-repeat="contact in contacts | filter:contactSearch" 
+                         ng-click="startChat(contact)"
+                         ng-class="{'active': currentChat && currentChat.type === 'private' && currentChat.id === contact.id}">
+                        <div class="chat-contact-avatar">
+                            <img ng-src="api/user/{{contact.id}}/avatar" alt="{{contact.username}}">
+                            <span class="chat-status-indicator" ng-class="{'online': contact.online}"></span>
+                        </div>
+                        <div class="chat-contact-info">
+                            <div class="chat-contact-name">{{contact.username}}</div>
+                            <div class="chat-contact-status">
+                                {{contact.online ? ('chat.online' | translate) : ('chat.offline' | translate)}}
+                            </div>
+                        </div>
+                        <div class="chat-contact-unread" ng-if="contact.unreadCount">
+                            <span class="badge">{{contact.unreadCount}}</span>
+                        </div>
+                    </div>
+                    <div class="chat-no-contacts" ng-if="contacts.length === 0">
+                        <p>{{ 'chat.no_contacts' | translate }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-groups" ng-show="activeTab === 'groups'">
+                <div class="chat-search">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="fas fa-search"></span></span>
+                        <input type="text" class="form-control input-sm" 
+                               ng-model="groupSearch" 
+                               placeholder="{{ 'chat.search_groups' | translate }}">
+                    </div>
+                </div>
+                
+                <div class="chat-group-list">
+                    <div class="chat-group" 
+                         ng-repeat="group in groups | filter:groupSearch" 
+                         ng-click="joinGroup(group)"
+                         ng-class="{'active': currentChat && currentChat.type === 'group' && currentChat.id === group.id}">
+                        <div class="chat-group-icon">
+                            <span class="fas fa-users"></span>
+                        </div>
+                        <div class="chat-group-info">
+                            <div class="chat-group-name">{{group.name}}</div>
+                            <div class="chat-group-members">
+                                {{group.memberCount}} {{ 'chat.members' | translate }}
+                            </div>
+                        </div>
+                        <div class="chat-group-unread" ng-if="group.unreadCount">
+                            <span class="badge">{{group.unreadCount}}</span>
+                        </div>
+                    </div>
+                    <div class="chat-no-groups" ng-if="groups.length === 0">
+                        <p>{{ 'chat.no_groups' | translate }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="chat-main" ng-if="currentChat">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="chat-header-avatar" ng-if="currentChat.type === 'private'">
+                    <img ng-src="api/user/{{currentChat.id}}/avatar" alt="{{currentChat.name}}">
+                    <span class="chat-status-indicator" 
+                          ng-class="{'online': isUserOnline(currentChat.id)}"></span>
+                </div>
+                <div class="chat-header-icon" ng-if="currentChat.type === 'group'">
+                    <span class="fas fa-users"></span>
+                </div>
+                <div class="chat-header-name">
+                    <h4>{{currentChat.name}}</h4>
+                    <div class="chat-header-subtitle" ng-if="currentChat.type === 'private'">
+                        {{isUserOnline(currentChat.id) ? ('chat.online' | translate) : ('chat.offline' | translate)}}
+                    </div>
+                    <div class="chat-header-subtitle" ng-if="currentChat.type === 'group'">
+                        {{currentChat.memberCount}} {{ 'chat.members' | translate }}
+                    </div>
+                </div>
+            </div>
+            <div class="chat-header-actions">
+                <div class="dropdown" uib-dropdown>
+                    <button class="btn btn-link" uib-dropdown-toggle>
+                        <span class="fas fa-ellipsis-v"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+                        <li ng-if="currentChat.type === 'group'">
+                            <a href ng-click="leaveGroup()">
+                                <span class="fas fa-sign-out-alt"></span> {{ 'chat.group.leave' | translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href ng-click="clearHistory()">
+                                <span class="fas fa-trash"></span> {{ 'chat.clear_history' | translate }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-messages" scroll-glue>
+            <div class="chat-date-separator" ng-repeat-start="group in messageGroups">
+                <span>{{group.date | date:'mediumDate'}}</span>
+            </div>
+            
+            <div ng-repeat="message in group.messages" 
+                 class="chat-message" 
+                 ng-class="{'chat-message-own': message.senderId === currentUser.id}">
+                <div class="chat-message-avatar" ng-if="message.senderId !== currentUser.id">
+                    <img ng-src="api/user/{{message.senderId}}/avatar" alt="{{message.senderName}}">
+                </div>
+                <div class="chat-message-content">
+                    <div class="chat-message-header">
+                        <span class="chat-message-sender">{{message.senderName}}</span>
+                        <span class="chat-message-time">{{message.createDate | date:'shortTime'}}</span>
+                    </div>
+                    <div class="chat-message-bubble">
+                        <div class="chat-message-text">{{message.content}}</div>
+                    </div>
+                </div>
+            </div>
+            <div ng-repeat-end></div>
+            
+            <div class="chat-no-messages" ng-if="messages.length === 0">
+                <div class="chat-no-messages-icon">
+                    <span class="fas fa-comments"></span>
+                </div>
+                <p>{{ 'chat.start_conversation' | translate }}</p>
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <div class="chat-input-container">
+                <div class="chat-input-attachments">
+                    <button class="btn btn-link" ng-click="addAttachment()">
+                        <span class="fas fa-paperclip"></span>
+                    </button>
+                </div>
+                <div class="chat-input-text">
+                    <textarea class="form-control" 
+                              ng-model="newMessage" 
+                              ng-keypress="sendMessage($event)"
+                              placeholder="{{ 'chat.type_message' | translate }}"
+                              rows="1"
+                              auto-resize></textarea>
+                </div>
+                <div class="chat-input-send">
+                    <button class="btn btn-primary btn-circle" ng-click="sendMessage()">
+                        <span class="fas fa-paper-plane"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="chat-welcome" ng-if="!currentChat">
+        <div class="chat-welcome-content">
+            <div class="chat-welcome-icon">
+                <span class="fas fa-comments"></span>
+            </div>
+            <h3>{{ 'chat.welcome' | translate }}</h3>
+            <p>{{ 'chat.welcome_message' | translate }}</p>
+            <button class="btn btn-primary" ng-click="startRandomChat()" ng-if="contacts.length > 0">
+                <span class="fas fa-random"></span> {{ 'chat.start_random_chat' | translate }}
+            </button>
+        </div>
+    </div>
+</div> 

@@ -64,6 +64,15 @@ angular.module('docs',
         }
       }
     })
+    .state('chat', {
+      url: '/chat',
+      views: {
+        'page': {
+          templateUrl: 'partial/docs/chat.html',
+          controller: 'Chat'
+        }
+      }
+    })
     .state('settings', {
       url: '/settings',
       abstract: true,
