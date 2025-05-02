@@ -37,7 +37,8 @@
     "logged_as": "Logged in as {{ username }}",
     "nav_settings": "Settings",
     "logout": "Logout",
-    "global_quota_warning": "<strong>Warning!</strong> Global quota almost reached at {{ current | number: 0 }}MB ({{ percent | number: 1 }}%) used on {{ total | number: 0 }}MB"
+    "global_quota_warning": "<strong>Warning!</strong> Global quota almost reached at {{ current | number: 0 }}MB ({{ percent | number: 1 }}%) used on {{ total | number: 0 }}MB",
+    "nav_chat": "Chat"
   },
   "document": {
     "navigation_up": "Go up one level",
@@ -657,5 +658,15 @@
   "loading": "Loading...",
   "send": "Send",
   "enabled": "Enabled",
-  "disabled": "Disabled"
+  "disabled": "Disabled",
+  "chat": {
+    "search_users": "Search users",
+    "loading": "Loading messages...",
+    "no_messages": "No messages yet. Start a conversation!",
+    "write_message": "Write a message...",
+    "send": "Send",
+    "sending": "Sending...",
+    "sent": "Sent",
+    "read": "Read"
+  }
 }

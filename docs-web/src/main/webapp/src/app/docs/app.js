@@ -417,6 +417,24 @@ angular.module('docs',
           controller: 'GroupProfile'
         }
       }
+    })
+    .state('chat', {
+      url: '/chat',
+      views: {
+        'page': {
+          templateUrl: 'partial/docs/chat.html',
+          controller: 'Chat'
+        }
+      }
+    })
+    .state('chat.messages', {
+      url: '/:username',
+      views: {
+        'messages': {
+          templateUrl: 'partial/docs/chat.messages.simple.html',
+          controller: 'ChatMessages'
+        }
+      }
     });
 
   // Configuring Restangular

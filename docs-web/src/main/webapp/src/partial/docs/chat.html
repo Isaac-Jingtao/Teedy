@@ -1,0 +1,97 @@
+<div class="row">
+  <div class="col-md-4">
+    <div class="well well-3d">
+      <p class="input-group">
+        <span class="input-group-addon"><span class="fas fa-search"></span></span>
+        <input type="search" class="form-control" ng-attr-placeholder="{{ 'chat.search_users' | translate }}" ng-model="searchUser">
+      </p>
+
+      <table class="row table table-hover">
+        <tbody>
+        <tr ng-repeat="user in chatUsers | filter: searchUser" 
+            ng-click="startChat(user)" 
+            ng-class="{ active: activeChat == user }" 
+            class="pointer">
+          <td class="col-xs-12">
+            <div class="chat-user">
+              <span class="fas fa-user"></span>
+              <span>{{ user }}</span>
+              <span class="badge badge-info pull-right" ng-if="unreadCounts[user] > 0">{{ unreadCounts[user] }}</span>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="well-3d-background">
+        <span class="fas fa-comments"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <!-- 静态聊天界面 -->
+    <div ng-if="activeChat" class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <span class="fas fa-user"></span> {{ activeChat }}
+        </h3>
+      </div>
+      <div class="panel-body">
+        <div class="chat-messages" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;">
+          <!-- 载入中提示 -->
+          <div class="text-center" ng-if="loading">
+            <span class="fas fa-circle-notch fa-spin"></span>
+            加载中...
+          </div>
+          
+          <!-- 无消息提示 -->
+          <div ng-if="!loading && (!messages || messages.length === 0)" class="text-center text-muted">
+            <p>没有聊天记录</p>
+            <p>开始与 {{ activeChat }} 聊天吧!</p>
+          </div>
+          
+          <!-- 消息列表 -->
+          <div ng-if="!loading && messages.length > 0">
+            <div ng-repeat="message in messages" class="message" 
+                 style="margin-bottom: 10px; padding: 8px; border-radius: 5px;"
+                 ng-class="{'bg-info text-right': message.sender === userInfo.username, 'bg-light-gray': message.sender !== userInfo.username}">
+              <div class="message-content">
+                <div class="message-text">{{ message.content }}</div>
+                <div class="message-meta" style="font-size: 11px; color: #777;">
+                  <span class="message-time">{{ message.timestamp | date:'shortTime' }}</span>
+                  <span class="message-status" ng-if="message.sender === userInfo.username">
+                    <span ng-if="message.sending" class="fas fa-clock" title="发送中"></span>
+                    <span ng-if="!message.sending && !message.read" class="fas fa-check" title="已发送"></span>
+                    <span ng-if="!message.sending && message.read" class="fas fa-check-double" title="已读"></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 消息输入框 -->
+        <div class="chat-input">
+          <div class="form-group">
+            <textarea class="form-control" 
+                     ng-model="$parent.messageText" 
+                     ng-keypress="handleKeyPress($event)" 
+                     placeholder="输入消息..."
+                     rows="3"></textarea>
+          </div>
+          <button class="btn btn-primary pull-right" ng-click="sendMessage()">
+            <span class="fas fa-paper-plane"></span> 发送
+          </button>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 未选择聊天用户时的提示 -->
+    <div ng-if="!activeChat" class="jumbotron text-center">
+      <span class="fas fa-comments fa-4x text-muted"></span>
+      <p class="text-muted">请从左侧选择一个用户开始聊天</p>
+    </div>
+  </div>
+</div> 

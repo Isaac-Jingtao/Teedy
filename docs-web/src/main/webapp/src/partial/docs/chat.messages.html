@@ -1,0 +1,28 @@
+<div class="chat-container">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <span class="fas fa-user"></span> {{ $stateParams.username }} - 测试模板
+      </h3>
+    </div>
+    <div class="panel-body">
+      <div class="alert alert-success">
+        <strong>测试成功!</strong> 如果您能看到此内容，则视图加载成功。
+      </div>
+      
+      <div class="well">
+        <p>当前聊天用户: <strong>{{ $stateParams.username }}</strong></p>
+        <p>这是一个测试视图，用于验证路由跳转功能是否正常。</p>
+      </div>
+      
+      <div class="form-group">
+        <label>发送消息测试</label>
+        <textarea class="form-control" rows="3" ng-model="messageText" placeholder="输入消息..."></textarea>
+      </div>
+      
+      <button class="btn btn-primary" ng-click="sendMessage()">
+        发送测试消息
+      </button>
+    </div>
+  </div>
+</div> 

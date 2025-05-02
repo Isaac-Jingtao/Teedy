@@ -37,7 +37,8 @@
     "logged_as": "以 {{ username }}登录",
     "nav_settings": "设置",
     "logout": "退出",
-    "global_quota_warning": "<strong>提醒!</strong> 全球配额存储空间已经使用 {{ current | number: 0 }}MB 占总存储配额 {{ total | number: 0 }}MB 的 ({{ percent | number: 1 }}%)"
+    "global_quota_warning": "<strong>提醒!</strong> 全球配额存储空间已经使用 {{ current | number: 0 }}MB 占总存储配额 {{ total | number: 0 }}MB 的 ({{ percent | number: 1 }}%)",
+    "nav_chat": "聊天"
   },
   "document": {
     "search_simple": "简单搜索",
@@ -544,5 +545,15 @@
       "password": "密码",
       "password_confirm": "确认密码"
     }
+  },
+  "chat": {
+    "search_users": "搜索用户",
+    "loading": "加载消息中...",
+    "no_messages": "暂无消息。开始一段对话吧！",
+    "write_message": "输入消息...",
+    "send": "发送",
+    "sending": "发送中...",
+    "sent": "已发送",
+    "read": "已读"
   }
 }
