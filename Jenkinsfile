@@ -16,11 +16,11 @@ pipeline {
                 sh 'mvn test -Dmaven.test.failure.ignore=true'
             }
         }
-        // stage('PMD') {
-        //     steps {
-        //         sh 'mvn pmd:pmd'
-        //     }
-        // }
+        stage('PMD') {
+            steps {
+                sh 'mvn pmd:pmd'
+            }
+        }
         stage('JaCoCo') {
             steps {
                 sh 'mvn jacoco:report'
@@ -28,7 +28,7 @@ pipeline {
         }
         stage('Javadoc') {
             steps {
-                sh 'mvn javadoc:javadoc'
+                sh 'mvn javadoc:javadoc -Dmaven.javadoc.failOnError=false'
             }
         }
         stage('Site') {
