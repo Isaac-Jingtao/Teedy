@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.8.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd"
+  name="Teedy">
+  
+  <bannerLeft>
+    <name>Teedy</name>
+  </bannerLeft>
+  
+  <publishDate position="right"/>
+  <version position="right"/>
+  
+  <body>
+    <menu name="Overview">
+      <item name="Introduction" href="index.html"/>
+    </menu>
+    
+    <menu name="Modules">
+      <item name="Docs Core" href="docs-core/index.html"/>
+      <item name="Docs Web Common" href="docs-web-common/index.html"/>
+      <item name="Docs Web" href="docs-web/index.html"/>
+    </menu>
+    
+    <menu ref="reports"/>
+  </body>
+</project> 
