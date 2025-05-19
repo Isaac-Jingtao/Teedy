@@ -1,45 +1,44 @@
-pipeline { 
-    agent any 
-    environment { 
-        // define environment variable 
-        // Jenkins credentials configuration 
-        DOCKER_HUB_CREDENTIALS = credentials('dockerhub_credentials') // Docker Hub credentials ID store in Jenkins 
-        // Docker Hub Repository's name 
-        DOCKER_IMAGE = 'monalisalw/teedy' // your Docker Hub user name and Repository's name 
-        DOCKER_TAG = "${env.BUILD_NUMBER}" // use build number as tag 
-    } 
-    stages { 
-        stage('Build') { 
-            steps { 
-                checkout scmGit( 
-                    branches: [[name: '*/master']],  
-                    extensions: []
-                    // userRemoteConfigs: [[url: 'https://github.com/xx/Teedy.git']] // your github Repository 
-                ) 
-                sh 'mvn -B -DskipTests clean package' 
-            } 
-        } 
-        // Building Docker images 
-        stage('Building image') { 
-            steps { 
-                script { 
-                    // assume Dockerfile locate at root  
-                    docker.build("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}") 
-                } 
-            } 
-        } 
-        // Uploading Docker images into Docker Hub 
-        stage('Upload image') { 
-            steps { 
-                script { 
-                    // sign in Docker Hub 
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') { 
-                        // push image 
-                        docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push() 
-                        // ：optional: label latest 
-                        docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push('latest') 
-                    } 
-                } 
+pipeline {
+    agent any
+    environment {
+        DEPLOYMENT_NAME = "hello-node"
+        CONTAINER_NAME = "hello-node"
+        IMAGE_NAME = "monalisalw/teedy:2"
+    }
+    stages {
+        stage('Start Minikube') {
+            steps {
+                sh '''
+                    if ! minikube status | grep -q "Running"; then
+                        echo "Starting Minikube..."
+                        minikube start
+                    else
+                        echo "Minikube already running."
+                    fi
+                '''
+            }
+        }
+        stage('Pull and Load Image') {
+            steps {
+                sh '''
+                    echo "拉取镜像并导入到 minikube..."
+                    docker pull ${IMAGE_NAME}
+                    minikube image load ${IMAGE_NAME}
+                '''
+            }
+        }
+        stage('Set Image') {
+            steps {
+                sh '''
+                    echo "设置 deployment 镜像..."
+                    kubectl set image deployment/${DEPLOYMENT_NAME} ${CONTAINER_NAME}=${IMAGE_NAME} --record
+                '''
+            }
+        }
+        stage('Verify') {
+            steps {
+                sh 'kubectl rollout status deployment/${DEPLOYMENT_NAME}'
+                sh 'kubectl get pods'
             }
         }
     }
