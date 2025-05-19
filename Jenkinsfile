@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DEPLOYMENT_NAME = "hello-node"
-        CONTAINER_NAME = "hello-node"
+        CONTAINER_NAME = "teedy"
         IMAGE_NAME = "monalisalw/teedy:2"
     }
     stages {
